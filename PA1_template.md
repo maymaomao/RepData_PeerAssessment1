@@ -1,10 +1,12 @@
 # Reproducible Research: Peer Assessment 1
 
 
+
 ## Loading and preprocessing the data
 
 ```r
-activity<-read.csv("..\\repdata-data-activity\\activity.csv")
+unzip("activity.zip")
+activity<-read.csv(".\\activity.csv")
 ```
 
 
@@ -22,13 +24,14 @@ hist(sums$steps,xlab="steps",main="The Total Number of Steps Taken Each Day")
 stepmean<-mean(sums$steps)
 stepmedian<-median(sums$steps)
 ```
-The mean is 1.0766189\times 10^{4} and median is 10765 total number of steps taken per day .
+The mean is 1.0766189\times 10^{4} and median is 10765 of total number of steps taken per day .
 
 ## What is the average daily activity pattern?
 
 ```r
 aves<-aggregate(steps~interval,data=activity,mean)
-plot(aves$interval,aves$steps,type="n",xlab="interval",ylab="steps")
+plot(aves$interval,aves$steps,type="n",xlab="interval",ylab="steps",
+     main="The Average Number of Steps versus 5-minute Intervals")
 lines(aves$interval,aves$steps)
 ```
 
@@ -43,6 +46,7 @@ maxaveinterval<-aves[aves$steps==max(aves$steps),1]
 The 835th interval, on average across all the days in the dataset, contains the maximum number of steps.
 
 ## Imputing missing values
+
 Calculate and report the total number of missing values in the dataset:
 
 ```r
@@ -110,17 +114,18 @@ imputactyadd1<-cbind(imputacty,factor(weekd))
 names(imputactyadd1)[4]<-"weekd"
 ```
 
-Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+Make a panel plot containing a time series plot of the 5-minute interval and the average number of steps taken, averaged across all weekday days or weekend days. 
 
 ```r
 par(mfcol=c(1,2))
-plot(imputactyadd1$interval,imputactyadd1$steps,type="n",xlab="interval",ylab="steps")
+plot(imputactyadd1$interval,imputactyadd1$steps,type="n",xlab="interval",ylab="steps",main="weekday")
 
 imputweekday<-imputactyadd1[imputactyadd1$weekd=="weekday",]
 avesweekday<-aggregate(steps~interval,data=imputweekday,mean)
 lines(avesweekday$interval,avesweekday$steps)
 
-plot(imputactyadd1$interval,imputactyadd1$steps,type="n",xlab="interval",ylab="steps")
+plot(imputactyadd1$interval,imputactyadd1$steps,type="n",xlab="interval",ylab="steps",
+     main="weekend")
 imputweekend<-imputactyadd1[imputactyadd1$weekd=="weekend",]
 avesweekend<-aggregate(steps~interval,data=imputweekend,mean)
 lines(avesweekend$interval,avesweekend$steps)
